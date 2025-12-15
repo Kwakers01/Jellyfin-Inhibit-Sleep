@@ -264,6 +264,9 @@ while (now_time.timestamp() < timeout_time.timestamp()):
             app_log.info('DETECTED - session_active_file - Jellyfin Active User Streaming Session Detected....')
             break
 
+    #Added a 1 sec sleep to stop the script running at 100% CPU
+    time.sleep(1)
+
 keyboard_file.close();
 mouse_file.close();
 
