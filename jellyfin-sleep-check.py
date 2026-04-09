@@ -37,6 +37,8 @@ import os
 import select
 import datetime
 from datetime import datetime, timedelta, timezone
+#Allow writing to the system journal
+from systemd import journal
 
 this_python_script = os.path.basename(__file__)
 this_pid = os.getpid()
@@ -136,14 +138,16 @@ else:
 ##***********************************************************************************************************************************************************
 
 ## Keyboard File
-keyboard_find = os.popen("find /dev|grep input|grep kbd").read().strip()
+## NOTE : Keyboard hashed out due to multiple keyboards causing issues - using mouse movements only now
 
-if (keyboard_find):
+#keyboard_find = os.popen("find /dev|grep input|grep kbd").read().strip()
 
-    keyboard_file = open(keyboard_find, "rb" )
-    app_log.info(f'Found file for keyboard input - using : {keyboard_file}')
+#if (keyboard_find):
 
-else :
+#    keyboard_file = open(keyboard_find, "rb" )
+#    app_log.info(f'Found file for keyboard input - using : {keyboard_file}')
+
+#else :
     keyboard_file = "NOFILE"
     app_log.warning('NO FILE FOUND for keyboard input')
 
@@ -272,6 +276,7 @@ mouse_file.close();
 
 if (now_time.timestamp() >= timeout_time.timestamp()):
     app_log.critical('SUSPENDING SYSTEM due to TIMEOUT TIME')
+    journal.send('jellyfin-sleep-check.py is SUSPENDING SYSTEM due to SLEEP TIMEOUT TIME')
     time.sleep(2)
     os.system('systemctl suspend')
     time.sleep(5)
