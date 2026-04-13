@@ -276,7 +276,9 @@ mouse_file.close();
 
 if (now_time.timestamp() >= timeout_time.timestamp()):
     app_log.critical('SUSPENDING SYSTEM due to TIMEOUT TIME')
-    journal.send('jellyfin-sleep-check.py is SUSPENDING SYSTEM due to SLEEP TIMEOUT TIME')
+    # Create a stream with warning priority (LOG_WARNING = 3)
+    warn_stream = journal.stream('jellyfin-sleep-check.py',priority=3)
+    warn_stream.write("SUSPENDING SYSTEM due to SLEEP TIMEOUT TIME\n")
     time.sleep(2)
     os.system('systemctl suspend')
     time.sleep(5)
